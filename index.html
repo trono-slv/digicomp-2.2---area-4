@@ -3,66 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulazione Certificazione DIGCOMP 2.2 Area 4: Sicurezza</title>
-    
-    <link rel="stylesheet" href="style.css"> 
-    
+    <title>Simulazione Esame DIGCOMP 2.2</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; padding: 20px; }
-        #quiz-container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #0056b3; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
-        #question-area { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
-        .option-label { display: block; margin: 10px 0; padding: 10px; border: 1px solid #eee; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
-        .option-label:hover { background-color: #e9e9e9; }
-        .option-label input { margin-right: 10px; }
-        .option-label.correct { background-color: #d4edda; border-color: #c3e6cb; }
-        .option-label.incorrect { background-color: #f8d7da; border-color: #f5c6cb; }
-        button { padding: 10px 15px; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
-        #submit-btn { background-color: #007bff; color: white; }
-        #submit-btn:disabled { background-color: #adb5bd; cursor: not-allowed; }
-        #hint-btn { background-color: #ffc107; color: black; margin-left: 10px; }
-        #hint-btn:disabled { background-color: #ffecb5; cursor: not-allowed; }
-        #timer-display { font-size: 1.2em; font-weight: bold; }
-        #controls { display: flex; justify-content: space-between; align-items: center; }
-        #controls p { margin: 0; }
+        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        #quiz-container { max-width: 800px; margin: 50px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #start-button { padding: 10px 20px; font-size: 1.2em; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        #start-button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
     <div id="quiz-container">
-        <h1>Simulazione Esame DIGCOMP 2.2 Area 4: Sicurezza (30 Domande Casuali)</h1>
-        <p>Basato sui contenuti DIGCOMP 2.2 e sui concetti fondamentali della Sicurezza Informatica ICDL. Rispondi alle domande e verifica le tue competenze.</p>
         
-        <div id="status-bar" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 10px; background-color: #f0f8ff; border-radius: 5px; border: 1px solid #cce5ff;">
-            <p>Tempo Rimanente: <strong id="timer-display">45:00</strong></p>
-            <p>Domande: <span id="current-num">0</span> / <span id="total-num">30</span></p>
+        <div id="start-screen">
+            <h1>Simulazione Esame DIGCOMP 2.2</h1>
+            <p>Il test consiste in <strong>30 domande</strong> selezionate casualmente da un paniere di 100, focalizzate sull'Area 4 (Sicurezza).</p>
+            <p>Tempo massimo a disposizione: <strong>45 minuti</strong>.</p>
+            <p>Soglia di superamento: <strong>80%</strong> (24 risposte esatte).</p>
+            <button id="start-button">INIZIA SIMULAZIONE</button>
         </div>
-        
-        <div id="question-area">
-            
-            <h2 id="question">Caricamento delle domande in corso...</h2>
 
-            <form id="options-form">
-                <label class="option-label"><input type="radio" name="answer" value="0"> <span class="option-text" id="opt-0">Opzione A</span></label>
-                <label class="option-label"><input type="radio" name="answer" value="1"> <span class="option-text" id="opt-1">Opzione B</span></label>
-                <label class="option-label"><input type="radio" name="answer" value="2"> <span class="option-text" id="opt-2">Opzione C</span></label>
-                <label class="option-label"><input type="radio" name="answer" value="3"> <span class="option-text" id="opt-3">Opzione D</span></label>
-            </form>
+        <div id="quiz-content" style="display: none;">
 
-            <div id="feedback-area" style="display: none; margin-top: 20px; padding: 10px; border-left: 5px solid #007bff; border-radius: 4px; background-color: #f8f9fa;">
-                <strong>Feedback:</strong> <span id="feedback-message"></span>
-                <p style="margin-top: 5px;">**Suggerimento/Spiegazione:** <span id="hint-message"></span></p>
+            <div id="status-bar">
+                <p>Domanda <span id="current-num">0</span> di <span id="total-num">30</span></p>
+                <p>Tempo Rimanente: <strong id="timer-display">45:00</strong></p>
+                <p>Punteggio: <strong id="score">0</strong></p>
+            </div>
+
+            <div id="question-area">
+                <h2 id="question">Caricamento Domanda...</h2>
+                
+                <form id="options-form">
+                    <label class="option-label" for="opt-0-input">
+                        <input type="radio" name="answer" id="opt-0-input" value="" disabled>
+                        <span class="option-text" id="opt-0"></span>
+                    </label>
+                    
+                    <label class="option-label" for="opt-1-input">
+                        <input type="radio" name="answer" id="opt-1-input" value="" disabled>
+                        <span class="option-text" id="opt-1"></span>
+                    </label>
+                    
+                    <label class="option-label" for="opt-2-input">
+                        <input type="radio" name="answer" id="opt-2-input" value="" disabled>
+                        <span class="option-text" id="opt-2"></span>
+                    </label>
+                    
+                    <label class="option-label" for="opt-3-input">
+                        <input type="radio" name="answer" id="opt-3-input" value="" disabled>
+                        <span class="option-text" id="opt-3"></span>
+                    </label>
+                </form>
+
+            </div>
+
+            <div id="feedback-area" style="display: none;">
+                <p id="feedback-message"><strong></strong></p>
             </div>
             
-            <button id="submit-btn" disabled>Verifica Risposta</button>
-            <button id="hint-btn">Suggerimento</button>
-        </div>
-        
-        <div id="controls" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px;">
-            <p>Punteggio Corrente: <span id="score">0</span> / 30</p>
-        </div>
-    </div>
+            <div id="controls">
+                </div>
 
-    <script src="script.js"></script>
+        </div> </div> <script src="script.js"></script>
 </body>
 </html>
