@@ -3,15 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulazione Certificazione ICDL / DIGCOMP -  Domande di Sicurezza</title>
+    <title>Simulazione Certificazione DIGCOMP 2.2 Area 4: Sicurezza</title>
     
     <link rel="stylesheet" href="style.css"> 
+    
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; padding: 20px; }
+        #quiz-container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        #question-area { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .option-label { display: block; margin: 10px 0; padding: 10px; border: 1px solid #eee; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
+        .option-label:hover { background-color: #e9e9e9; }
+        .option-label input { margin-right: 10px; }
+        .option-label.correct { background-color: #d4edda; border-color: #c3e6cb; }
+        .option-label.incorrect { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
+        #submit-btn { background-color: #007bff; color: white; }
+        #submit-btn:disabled { background-color: #adb5bd; cursor: not-allowed; }
+        #hint-btn { background-color: #ffc107; color: black; margin-left: 10px; }
+        #hint-btn:disabled { background-color: #ffecb5; cursor: not-allowed; }
+        #timer-display { font-size: 1.2em; font-weight: bold; }
+        #controls { display: flex; justify-content: space-between; align-items: center; }
+        #controls p { margin: 0; }
+    </style>
 </head>
 <body>
 
     <div id="quiz-container">
         <h1>Simulazione Esame DIGCOMP 2.2 Area 4: Sicurezza (30 Domande Casuali)</h1>
         <p>Basato sui contenuti DIGCOMP 2.2 e sui concetti fondamentali della Sicurezza Informatica ICDL. Rispondi alle domande e verifica le tue competenze.</p>
+        
+        <div id="status-bar" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 10px; background-color: #f0f8ff; border-radius: 5px; border: 1px solid #cce5ff;">
+            <p>Tempo Rimanente: <strong id="timer-display">45:00</strong></p>
+            <p>Domande: <span id="current-num">0</span> / <span id="total-num">30</span></p>
+        </div>
         
         <div id="question-area">
             
@@ -26,15 +51,15 @@
 
             <div id="feedback-area" style="display: none; margin-top: 20px; padding: 10px; border-left: 5px solid #007bff; border-radius: 4px; background-color: #f8f9fa;">
                 <strong>Feedback:</strong> <span id="feedback-message"></span>
-                <p style="margin-top: 5px;">**Suggerimento:** <span id="hint-message"></span></p>
+                <p style="margin-top: 5px;">**Suggerimento/Spiegazione:** <span id="hint-message"></span></p>
             </div>
             
             <button id="submit-btn" disabled>Verifica Risposta</button>
+            <button id="hint-btn">Suggerimento</button>
         </div>
         
         <div id="controls" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px;">
-            <p>Domanda <span id="current-num">0</span> di <span id="total-num">30</span></p>
-            <p>Punteggio: <span id="score">0</span> / 30</p>
+            <p>Punteggio Corrente: <span id="score">0</span> / 30</p>
         </div>
     </div>
 
