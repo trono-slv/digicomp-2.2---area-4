@@ -156,9 +156,9 @@ const fullQuizData = [
     },
     {
         question: "26. Quale strumento digitale rientra nella competenza 4.4 per la **Sostenibilità Digitale**?",
-        options: ["Un software di gestione di password.", "Un Keylogger.", "Sensori IoT per monitorare e ottimizzare l'uso delle risorse (es. energia, acqua) in un edificio.", "Un sistema di autenticazione biometrica."],
-        answer: "Sensori IoT per monitorare e ottimizzare l'uso delle risorse (es. energia, acqua) in un edificio.",
-        hint: "L'IoT può rendere l'uso delle risorse più efficiente e quindi più sostenibile."
+        options: ["Rootkit", "Piattaforme di e-learning e marketplace di prodotti sostenibili o piattaforme di volontariato online.", "Crittografia Asimmetrica.", "SQL Injection."],
+        answer: "Piattaforme di e-learning e marketplace di prodotti sostenibili o piattaforme di volontariato online.",
+        hint: "Sfrutta la tecnologia per l'impatto positivo e la sensibilizzazione."
     },
     {
         question: "27. L'utilizzo di uno scanner di vulnerabilità di rete rientra nella competenza di:",
@@ -293,7 +293,7 @@ const fullQuizData = [
         hint: "Il nome si traduce in 'Prevenzione della Perdita di Dati'."
     },
     {
-        question: "49. Qual è la minaccia che sfrutta la manipolazione psicologica degli utenti per convincerli a rivelare informazioni riservate?",
+        question: "49. Quale minaccia sfrutta la manipolazione psicologica degli utenti per convincerli a rivelare informazioni riservate?",
         options: ["Cracking", "Hacking", "Spoofing", "Social Engineering"],
         answer: "Social Engineering",
         hint: "Sfrutta l'errore umano, non le vulnerabilità tecniche del software."
@@ -461,7 +461,7 @@ const fullQuizData = [
         hint: "Il termine significa 'caccia alla balena', indicando un obiettivo di grandi dimensioni."
     },
     {
-        question: "77. Qual è la caratteristica distintiva di un **Worm** rispetto a un Virus?",
+        question: "77. Quale caratteristica distintiva di un **Worm** rispetto a un Virus?",
         options: ["Non richiede un file ospite (si auto-propaga) e si diffonde autonomamente attraverso la rete.", "È sempre un file eseguibile.", "Non danneggia mai i file.", "Richiede l'intervento dell'utente per diffondersi."],
         answer: "Non richiede un file ospite (si auto-propaga) e si diffonde autonomamente attraverso la rete.",
         hint: "Il suo meccanismo di diffusione è autonomo, come un 'verme' che si muove da solo."
@@ -551,7 +551,7 @@ const fullQuizData = [
         hint: "Attacca l'infrastruttura di risoluzione dei nomi di dominio."
     },
     {
-        question: "92. Qual è l'uso più comune della crittografia **simmetrica**?",
+        question: "92. Quale uso è più comune della crittografia **simmetrica**?",
         options: ["Scambio di chiavi segrete tra due parti.", "Crittografia del traffico HTTPS.", "Crittografia di grandi volumi di dati (es. un intero hard disk o un backup).", "Firma digitale."],
         answer: "Crittografia di grandi volumi di dati (es. un intero hard disk o un backup).",
         hint: "È più veloce, ideale per carichi pesanti."
@@ -809,7 +809,7 @@ function showResults(timeExpired = false) {
     
     const percentage = (score / TOTAL_QUESTIONS);
     const isPassed = percentage >= PASS_THRESHOLD;
-    const statusText = isPassed ? "SUPERATO!" : "NON SUPERATO.";
+    const statusText = isPassed ? "SIMULAZIONE SUPERATA!" : "SIMULAZIONE NON SUPERATA.";
     const statusColor = isPassed ? 'var(--success-color)' : 'var(--danger-color)';
     const passScore = TOTAL_QUESTIONS * PASS_THRESHOLD;
 
