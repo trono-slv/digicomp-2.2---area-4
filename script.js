@@ -3,6 +3,7 @@
 // =====================================================================================
 
 const fullQuizData = [
+    // INIZIO PANIERE (Le tue 100 domande complete e verificate vanno qui)
     {
         question: "1. Quale protocollo di sicurezza garantisce che una connessione web tra browser e server sia crittografata, indicato dall'URL che inizia con `https://`?",
         options: ["HTTP", "FTP", "SMTP", "HTTPS"],
@@ -256,7 +257,7 @@ const fullQuizData = [
         hint: "È un principio di sicurezza basato sulla minima autorizzazione necessaria."
     },
     {
-        question: "43. Quale strumento digitale, secondo l'Area 4.4, può essere utilizzato per contribuire attivamente a iniziative sociali o ambientali?",
+        question: "43. Quale strumento digitale rientra nella competenza 4.4 per la **Sostenibilità Digitale**?",
         options: ["Rootkit", "Piattaforme di e-learning e marketplace di prodotti sostenibili o piattaforme di volontariato online.", "Crittografia Asimmetrica.", "SQL Injection."],
         answer: "Piattaforme di e-learning e marketplace di prodotti sostenibili o piattaforme di volontariato online.",
         hint: "Sfrutta la tecnologia per l'impatto positivo e la sensibilizzazione."
@@ -303,9 +304,6 @@ const fullQuizData = [
         answer: "Liceità (Legalità) e Trasparenza.",
         hint: "Il trattamento è lecito solo se l'utente è stato informato e ha acconsentito."
     },
-    // =====================================================================================
-    // 51. AGGIUNTE PER RAGGIUNGERE LE 100 DOMANDE (DA RIVEDERE E PERSONALIZZARE)
-    // =====================================================================================
     {
         question: "51. Quale tipo di backup è il più veloce da eseguire ma il più lento da ripristinare?",
         options: ["Completo", "Incrementale", "Differenziale", "Mirroring"],
@@ -565,7 +563,7 @@ const fullQuizData = [
         hint: "Forniscono l'infrastruttura per la cifratura asimmetrica e le firme digitali."
     },
     {
-        question: "94. Qual è un rischio specifico della **navigazione in incognito** (modalità privata)?",
+        question: "94. Quale rischio specifico della **navigazione in incognito** (modalità privata)?",
         options: ["Non crittografa la connessione.", "Non protegge dalle attività del tuo ISP o del gestore di rete aziendale; nasconde solo la cronologia e i cookie locali.", "Aumenta la velocità di Internet.", "Disabilita il firewall."],
         answer: "Non protegge dalle attività del tuo ISP o del gestore di rete aziendale; nasconde solo la cronologia e i cookie locali.",
         hint: "Non garantisce l'anonimato totale, ma solo locale."
@@ -606,16 +604,18 @@ const fullQuizData = [
         answer: "Un insieme di pratiche di sicurezza informatica di base e regolari (come aggiornamenti, backup, password forti) mantenute per garantire la salute del sistema.",
         hint: "È l'analogia con l'igiene personale, applicata alla sicurezza digitale."
     }
+    // FINE PANIERE
 ];
 
 // =====================================================================================
-// 2. LOGICA DEL QUIZ E GESTIONE (RIMANE INVARIATA)
+// 2. LOGICA DEL QUIZ E GESTIONE
 // =====================================================================================
 
 // Configurazione
 const TIME_LIMIT = 45 * 60; // 45 minuti in secondi
-const TOTAL_QUESTIONS = 30; // Numero di domande da estrarre (rimane 30)
+const TOTAL_QUESTIONS = 30; // Numero di domande da estrarre
 const PASS_THRESHOLD = 0.8; // 80% per il superamento (24/30)
+const FEEDBACK_DELAY = 1500; // 1.5 secondi per mostrare il feedback prima di passare alla successiva
 
 // Variabili globali
 let questionsForQuiz = [];
@@ -624,21 +624,21 @@ let score = 0;
 let answered = false;
 let timeLeft = TIME_LIMIT;
 let timerInterval;
-let quizLog = []; // Per il riepilogo finale
+let quizLog = []; // Per tenere traccia di tutte le risposte per il riepilogo finale
 
 // Riferimenti agli elementi HTML
+const startScreenEl = document.getElementById('start-screen');
+const quizContentEl = document.getElementById('quiz-content');
+const startButtonEl = document.getElementById('start-button');
 const questionEl = document.getElementById('question');
 const optionsForm = document.getElementById('options-form');
-const submitBtn = document.getElementById('submit-btn');
-const hintBtn = document.getElementById('hint-btn');
 const currentNumEl = document.getElementById('current-num');
 const totalNumEl = document.getElementById('total-num');
 const scoreEl = document.getElementById('score');
 const feedbackArea = document.getElementById('feedback-area');
 const feedbackMessageEl = document.getElementById('feedback-message');
-const hintMessageEl = document.getElementById('hint-message');
 const timerDisplayEl = document.getElementById('timer-display');
-const optionLabels = optionsForm.querySelectorAll('.option-label');
+
 
 /**
  * Funzione di utilità per rimescolare un array (algoritmo Fisher-Yates).
@@ -651,7 +651,7 @@ function shuffleArray(array) {
 }
 
 /**
- * Seleziona un sottoinsieme casuale di 30 domande dal paniere completo (100).
+ * Seleziona un sottoinsieme casuale di 30 domande dal paniere completo.
  */
 function selectRandomQuestions() {
     shuffleArray(fullQuizData);
@@ -684,12 +684,12 @@ function updateTimerDisplay() {
     if (timerDisplayEl) timerDisplayEl.textContent = display;
     
     // Cambia colore quando il tempo è critico
-    if (timeLeft < 300 && timeLeft >= 60) { // Tra 5 minuti e 1 minuto
+    if (timeLeft < 300 && timeLeft >= 60) {
         timerDisplayEl.style.color = 'orange';
-    } else if (timeLeft < 60) { // Ultimo minuto
+    } else if (timeLeft < 60) {
         timerDisplayEl.style.color = 'red';
     } else {
-        timerDisplayEl.style.color = '#333';
+        timerDisplayEl.style.color = '#333'; // Colore neutro (lo stile CSS di base)
     }
 }
 
@@ -704,9 +704,9 @@ function loadQuestion() {
 
     const currentQ = questionsForQuiz[currentQuestionIndex];
     
-    // Prepara e rimescola le opzioni
+    // Preparazione e rimescolamento delle opzioni
     const optionsWithAnswer = currentQ.options.map(opt => ({ text: opt, isCorrect: opt === currentQ.answer }));
-    shuffleArray(optionsWithAnswer); // Rimescola le opzioni
+    shuffleArray(optionsWithAnswer);
 
     // Aggiorna l'interfaccia utente
     questionEl.textContent = `Domanda ${currentQuestionIndex + 1}: ${currentQ.question}`;
@@ -714,94 +714,59 @@ function loadQuestion() {
     scoreEl.textContent = score;
 
     optionsForm.reset();
-    submitBtn.textContent = 'Verifica Risposta';
-    submitBtn.disabled = true;
-    if (hintBtn) hintBtn.disabled = false; // Riabilita suggerimento
     feedbackArea.style.display = 'none';
-    answered = false;
+    answered = false; 
 
-    // Inietta le opzioni nella form e resetta lo stile
+    // Rimuove tutti i listener e resetta l'aspetto visivo
+    optionsForm.removeEventListener('change', handleOptionClick);
+    
     optionsWithAnswer.forEach((opt, index) => {
-        const input = optionsForm.querySelector(`input[value="${index}"]`);
+        const input = optionsForm.querySelector(`input[id="opt-${index}-input"]`);
         const textSpan = document.getElementById(`opt-${index}`);
-        const label = optionLabels[index]; // Usa il riferimento diretto all'etichetta
+        const label = optionsForm.querySelectorAll('.option-label')[index];
         
         textSpan.textContent = opt.text;
         input.value = opt.text; // Imposta il valore dell'input con il testo dell'opzione
         
-        // Resetta lo stile
+        // Resetta lo stile e riabilita
         label.classList.remove('correct', 'incorrect');
+        label.style.pointerEvents = 'auto'; 
         input.disabled = false;
-        label.style.backgroundColor = ''; // Rimuove eventuali colori di feedback
+        label.style.backgroundColor = '';
     });
 
-    // Aggiunge un listener temporaneo per abilitare il pulsante 'Verifica'
-    optionsForm.addEventListener('change', enableSubmitButton, { once: true });
+    // Aggiunge il listener per la risposta immediata al click
+    optionsForm.addEventListener('change', handleOptionClick);
 }
 
 /**
- * Abilita il pulsante di verifica quando un'opzione è selezionata.
+ * Gestisce la risposta dell'utente, la verifica, il feedback e il passaggio alla successiva.
+ * Viene chiamata quando l'utente seleziona un'opzione (change event sul form).
  */
-function enableSubmitButton() {
-    submitBtn.disabled = false;
-}
+function handleOptionClick(event) {
+    if (answered) return; 
 
-/**
- * Mostra il suggerimento per la domanda corrente.
- */
-function showHint() {
-    if (!hintBtn || hintBtn.disabled) return;
-    
-    const hintText = questionsForQuiz[currentQuestionIndex].hint;
-    hintMessageEl.textContent = hintText;
-    
-    // Aggiorna lo stile per il suggerimento
-    feedbackArea.style.display = 'block';
-    feedbackMessageEl.textContent = "Ecco un piccolo indizio per aiutarti:";
-    feedbackArea.style.borderLeftColor = '#ffc107'; // Giallo
-    feedbackArea.style.backgroundColor = '#fff3cd';
-    
-    hintBtn.disabled = true; // Suggerimento disponibile una sola volta per domanda
-}
+    const selectedInput = event.target;
+    if (selectedInput.type !== 'radio') return;
 
-/**
- * Gestisce la risposta dell'utente, la verifica e mostra il feedback.
- */
-function checkAnswer() {
-    if (answered) {
-        // Se si è già risposto, passa alla successiva
-        currentQuestionIndex++;
-        loadQuestion();
-        return;
-    }
+    answered = true; // Blocca ulteriori risposte
+    optionsForm.style.pointerEvents = 'none'; // Impedisce il cambio di opzione
 
-    const selectedInput = optionsForm.querySelector('input[name="answer"]:checked');
     const currentQ = questionsForQuiz[currentQuestionIndex];
-
-    if (!selectedInput) {
-        alert("Seleziona una risposta prima di continuare.");
-        return;
-    }
-
     const userAnswer = selectedInput.value;
     const correctA = currentQ.answer;
-    const hintText = currentQ.hint;
     
-    // Disabilita tutte le opzioni e il suggerimento
-    optionsForm.querySelectorAll('input').forEach(input => input.disabled = true);
-    if (hintBtn) hintBtn.disabled = true;
-
     let isCorrect = (userAnswer === correctA);
 
     // Aggiorna lo score e il feedback
     if (isCorrect) {
         score++;
         feedbackMessageEl.textContent = "Corretto! Ottimo lavoro.";
-        feedbackArea.style.borderLeftColor = '#28a745'; // Verde
+        feedbackArea.style.borderLeftColor = '#28a745'; // Success Color (Verde)
         feedbackArea.style.backgroundColor = '#d4edda';
     } else {
-        feedbackMessageEl.textContent = "Sbagliato. La risposta corretta è:";
-        feedbackArea.style.borderLeftColor = '#dc3545'; // Rosso
+        feedbackMessageEl.textContent = `Sbagliato. La risposta corretta è: ${correctA}`;
+        feedbackArea.style.borderLeftColor = '#dc3545'; // Danger Color (Rosso)
         feedbackArea.style.backgroundColor = '#f8d7da';
     }
     
@@ -813,24 +778,27 @@ function checkAnswer() {
         isCorrect: isCorrect
     });
 
-    // Trova e colora la risposta corretta
-    optionLabels.forEach(label => {
-        const text = label.querySelector('.option-text').textContent;
+    // Colora la risposta corretta e, se diversa, la risposta dell'utente
+    optionsForm.querySelectorAll('.option-label').forEach(label => {
         const input = label.querySelector('input');
-
-        if (text === correctA) {
-            label.classList.add('correct'); // La classe 'correct' colora la risposta giusta
+        
+        if (input.value === correctA) {
+            label.classList.add('correct');
         } else if (input.checked && !isCorrect) {
-            label.classList.add('incorrect'); // La classe 'incorrect' colora la risposta sbagliata dell'utente
+            label.classList.add('incorrect');
         }
+        input.disabled = true; // Disabilita tutte le opzioni
     });
 
-    hintMessageEl.textContent = hintText; // Mostra il suggerimento come spiegazione
     feedbackArea.style.display = 'block';
     scoreEl.textContent = score;
 
-    answered = true;
-    submitBtn.textContent = (currentQuestionIndex < TOTAL_QUESTIONS - 1) ? 'Domanda Successiva' : 'Termina Quiz';
+    // Passa alla domanda successiva dopo il delay
+    setTimeout(() => {
+        currentQuestionIndex++;
+        optionsForm.style.pointerEvents = 'auto'; 
+        loadQuestion();
+    }, FEEDBACK_DELAY);
 }
 
 /**
@@ -842,18 +810,19 @@ function showResults(timeExpired = false) {
     const percentage = (score / TOTAL_QUESTIONS);
     const isPassed = percentage >= PASS_THRESHOLD;
     const statusText = isPassed ? "SUPERATO!" : "NON SUPERATO.";
-    const statusColor = isPassed ? 'green' : 'red';
+    const statusColor = isPassed ? 'var(--success-color)' : 'var(--danger-color)';
+    const passScore = TOTAL_QUESTIONS * PASS_THRESHOLD;
 
     // === 1. Genera il riepilogo HTML dettagliato ===
     let summaryHtml = quizLog.map((logItem, index) => {
-        const color = logItem.isCorrect ? 'green' : 'red';
+        const color = logItem.isCorrect ? 'var(--success-color)' : 'var(--danger-color)';
         const icon = logItem.isCorrect ? '✅' : '❌';
         const userAnswerDisplay = logItem.userAnswer || 'Nessuna Risposta';
         
         // Se sbagliato, mostra anche la risposta corretta
-        const correctInfo = logItem.isCorrect ? '' : `<br> <span style="color: green; font-weight: bold;">Risposta Corretta: ${logItem.correctAnswer}</span>`;
+        const correctInfo = logItem.isCorrect ? '' : `<br> <span style="color: var(--success-color); font-weight: bold;">Risposta Corretta: ${logItem.correctAnswer}</span>`;
         
-        return `<p style="margin-bottom: 5px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; text-align: left;">
+        return `<p style="margin-bottom: 5px; border-bottom: 1px dashed #ced4da; padding-bottom: 5px; text-align: left;">
                     <strong style="color: ${color};">${icon} Domanda ${index + 1}:</strong> ${logItem.questionText.replace(/Domanda \d+: /g, '')}
                     <br><span style="color: ${color}; font-weight: bold;">Tua Risposta: ${userAnswerDisplay}</span>
                     ${correctInfo}
@@ -863,45 +832,56 @@ function showResults(timeExpired = false) {
     // === 2. Aggiorna l'interfaccia ===
     questionEl.textContent = "Simulazione Terminata!";
     
-    let timerMessage = timeExpired ? `<p style="color: red; font-weight: bold;">Tempo esaurito (45:00) ⏳</p>` : `<p>Tempo totale impiegato: ${TIME_LIMIT - timeLeft} secondi.</p>`;
+    let timerMessage = timeExpired ? `<p style="color: var(--danger-color); font-weight: bold;">Tempo esaurito (45:00) ⏳</p>` : `<p>Tempo totale impiegato: ${Math.floor((TIME_LIMIT - timeLeft) / 60).toString().padStart(2, '0')}:${((TIME_LIMIT - timeLeft) % 60).toString().padStart(2, '0')} (M:SS).</p>`;
 
     optionsForm.innerHTML = `${timerMessage}
                              <h2 style="color: ${statusColor}; border-bottom: 2px solid ${statusColor}; padding-bottom: 10px;">${statusText}</h2>
                              <h3>Risultato Finale: ${score} / ${TOTAL_QUESTIONS}</h3>
-                             <p>Percentuale di risposte corrette: <strong>${(percentage * 100).toFixed(1)}%</strong> (Soglia superamento: ${(PASS_THRESHOLD * 100)}%)</p>
+                             <p>Percentuale di risposte corrette: <strong>${(percentage * 100).toFixed(1)}%</strong></p>
+                             <p>Devi raggiungere ${passScore} risposte esatte per superare la prova.</p>
                              <hr style="margin: 20px 0;">
                              <h4>Riepilogo Dettagliato delle Risposte:</h4>
-                             <div style="text-align: center; max-height: 400px; overflow-y: auto; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #fafafa;">
+                             <div style="text-align: center; max-height: 400px; overflow-y: auto; padding: 15px; border: 1px solid #e9ecef; border-radius: 5px; background-color: #fafafa;">
                                 ${summaryHtml}
-                             </div>`;
+                             </div>
+                             <button id="restart-button">Riprova</button>`;
     
-    feedbackArea.style.display = 'none';
-    if (hintBtn) hintBtn.style.display = 'none';
+    // Rimuove/Nasconde elementi non necessari
     if (document.getElementById('status-bar')) document.getElementById('status-bar').style.display = 'none';
+    feedbackArea.style.display = 'none';
     
-    submitBtn.textContent = 'Riprova';
-    submitBtn.disabled = false;
-    submitBtn.onclick = () => window.location.reload(); // Ricarica la pagina per ricominciare
+    // Listener per il pulsante Riprova finale
+    document.getElementById('restart-button').onclick = () => window.location.reload(); 
     
     currentNumEl.textContent = TOTAL_QUESTIONS;
 }
 
+/**
+ * Avvia il quiz: nasconde la schermata di avvio, mostra il contenuto del quiz,
+ * estrae le domande e fa partire il timer.
+ */
+function startQuiz() {
+    if (startScreenEl) startScreenEl.style.display = 'none';
+    if (quizContentEl) quizContentEl.style.display = 'block';
+
+    selectRandomQuestions();
+    startTimer();
+    updateTimerDisplay();
+    loadQuestion();
+}
+
 // =====================================================================================
-// 3. AVVIO DEL QUIZ
+// 3. INIZIALIZZAZIONE
 // =====================================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    selectRandomQuestions();
-    startTimer();
-    updateTimerDisplay(); // Mostra subito 45:00
-
-    // Collega gli eventi ai pulsanti
-    submitBtn.onclick = checkAnswer;
-    if (hintBtn) hintBtn.onclick = showHint;
+    // 1. Configura il bottone di avvio
+    if (startButtonEl) {
+        startButtonEl.addEventListener('click', startQuiz);
+    }
     
-    // Inizializza l'interfaccia
-    totalNumEl.textContent = TOTAL_QUESTIONS;
-    scoreEl.textContent = score;
-
-    loadQuestion();
+    // 2. Imposta i valori iniziali (mostrati nella start screen)
+    if (totalNumEl) totalNumEl.textContent = TOTAL_QUESTIONS;
+    if (scoreEl) scoreEl.textContent = score;
+    updateTimerDisplay(); // Mostra il tempo iniziale 45:00
 });
