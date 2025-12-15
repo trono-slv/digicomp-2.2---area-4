@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulazione Certificazione ICDL / DIGCOMP -  Domande di Sicurezza</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <div id="quiz-container">
+        <h1>Simulazione Esame DIGCOMP 2.2 Area 4: Sicurezza (30 Domande Casuali)</h1>
+        <p>Basato sui contenuti DIGCOMP 2.2 e sui concetti fondamentali della Sicurezza Informatica ICDL. Rispondi alle domande e verifica le tue competenze.</p>
+        
+        <div id="question-area">
+            
+            <h2 id="question">Caricamento delle domande in corso...</h2>
+
+            <form id="options-form">
+                <label class="option-label"><input type="radio" name="answer" value="0"> <span class="option-text" id="opt-0">Opzione A</span></label>
+                <label class="option-label"><input type="radio" name="answer" value="1"> <span class="option-text" id="opt-1">Opzione B</span></label>
+                <label class="option-label"><input type="radio" name="answer" value="2"> <span class="option-text" id="opt-2">Opzione C</span></label>
+                <label class="option-label"><input type="radio" name="answer" value="3"> <span class="option-text" id="opt-3">Opzione D</span></label>
+            </form>
+
+            <div id="feedback-area" style="display: none; margin-top: 20px; padding: 10px; border-left: 5px solid #007bff; border-radius: 4px; background-color: #f8f9fa;">
+                <strong>Feedback:</strong> <span id="feedback-message"></span>
+                <p style="margin-top: 5px;">**Suggerimento:** <span id="hint-message"></span></p>
+            </div>
+            
+            <button id="submit-btn" disabled>Verifica Risposta</button>
+        </div>
+        
+        <div id="controls" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px;">
+            <p>Domanda <span id="current-num">0</span> di <span id="total-num">30</span></p>
+            <p>Punteggio: <span id="score">0</span> / 30</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
